@@ -1,6 +1,6 @@
 # Next.js System Monitor Dashboard 🚀
 
-A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Raspberry Pi 5 and professional Linux server environments.
+A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Raspberry Pi 5 and professional Linux server environments to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
 
 ![Dashboard Preview](public/screenshots/dashboard-dark.jpg)
 
@@ -17,15 +17,44 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
   - Advanced Process Manager with termination capabilities.
 - **🛠️ Integrated Tools**: Built-in Network tools (Ping/DNS), Storage Manager (File browser/editor), and a secure Command Runner.
 
+## 🚀 Core Features
+
+- **Authentication**: Secure login using SSH credentials, with a fallback for environment variables.
+- **Docker Integration**: 
+  - View running/stopped containers.
+  - Real-time CPU & Memory usage per container.
+  - **Live Logs** viewer for containers.
+  - Start/Stop status indicators.
+- **Process Manager**: Top 5 CPU consumers on dashboard + dedicated full process list.
+- **Visual History**: Interactive area graphs for CPU and Memory history.
+- **Storage Manager**: Browse the file system, view mounted filesystems with usage, and edit text files directly in the browser.
+- **Responsive Design**: Fully optimized for Mobile, Tablet, and Desktop.
+- **Dark/Light Mode**: Toggleable themes saved to local storage.
+
 ## 🛠️ Tech Stack
 
 - **Framework**: [Next.js 14+](https://nextjs.org/) (App Router & Turbopack)
 - **UI Library**: [Material UI (MUI)](https://mui.com/)
 - **Charts**: [Recharts](https://recharts.org/)
 - **System Info**: [systeminformation](https://www.npmjs.com/package/systeminformation)
-- **Runtime**: Node.js 20+
+- **Backend**: Node.js API Routes (Next.js)
 
-## 📦 Quick Start (Production Mode)
+## 🐳 Docker Deployment (Recommended)
+
+The easiest way to run the dashboard with all necessary permissions is using Docker Compose.
+
+1.  **Build and Start**
+    ```bash
+    docker compose up -d --build
+    ```
+
+2.  **Required Permissions**
+    To ensure the dashboard can read system metrics from the host, the container requires:
+    - Access to the **Docker Socket** (`/var/run/docker.sock`)
+    - Access to host system paths (`/proc`, `/sys`)
+    - `privileged: true` or specific capabilities for hardware temperature/CPU data.
+
+## 📦 Manual Installation (Production Mode)
 
 1.  **Clone & Install**
     ```bash
@@ -44,22 +73,23 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
     PORT=9123 node .next/standalone/server.js
     ```
 
-## 🐳 Docker Deployment
+## 📱 Screenshots
 
-The easiest way to run the dashboard with all necessary permissions is using Docker Compose.
+| Dashboard (Dark) | Dashboard (Light) |
+|---|---|
+| ![Dark Mode](public/screenshots/dashboard-dark.jpg) | ![Light Mode](public/screenshots/dashboard-light.jpg) |
 
-1.  **Build and Start**
-    ```bash
-    docker compose up -d --build
-    ```
+| Docker Containers | Container Logs |
+|---|---|
+| ![Docker List](public/screenshots/docker-list.jpg) | ![Docker Logs](public/screenshots/docker-logs.jpg) |
 
-2.  **Required Permissions**
-    To ensure the dashboard can read system metrics from the host, the container requires:
-    - Access to the **Docker Socket** (`/var/run/docker.sock`)
-    - Access to host system paths (`/proc`, `/sys`)
-    - `privileged: true` or specific capabilities for hardware temperature/CPU data.
+| Process Manager | Mobile Friendly |
+|---|---|
+| ![Processes](public/screenshots/processes.jpg) | *(Responsive Layout)* |
 
-The provided `docker-compose.yml` handles these mounts and environment variables automatically.
+## 🤝 Contributing
+
+This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
 
 ---
 *Maintained by Satyaa & Clawdy 🦞*
