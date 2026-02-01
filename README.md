@@ -1,6 +1,6 @@
 # Next.js System Monitor Dashboard 🚀
 
-A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Raspberry Pi 5 and professional Linux server environments to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
+A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Linux servers and professional Linux server environments to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
 
 ![Dashboard Preview](public/screenshots/dashboard-dark.jpg)
 
@@ -8,7 +8,7 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
 
 - **🎨 Modernized Auth UI**: Sleek glassmorphism login interface with improved validation, backdrop blur effects, and responsive design.
 - **🔐 Secure Session Management**: Integrated **Logout** functionality and persistent "Remember Me" support via JWT.
-- **⚡ Pi5 Performance Optimization**: 
+- **⚡ Linux Performance Optimization**: 
   - **Standalone Build Mode**: Uses Next.js standalone output to reduce the production footprint from **2GB to ~96MB**.
   - **RAM Disk Friendly**: Designed to run efficiently in volatile high-speed storage environments.
 - **📊 Real-Time Monitoring**: Live tracking of CPU usage, Memory pressure, Temperature, and Network I/O.
