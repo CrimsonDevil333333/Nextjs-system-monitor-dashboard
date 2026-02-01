@@ -44,9 +44,22 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
     PORT=9123 node .next/standalone/server.js
     ```
 
-## 🤝 Contributing
+## 🐳 Docker Deployment
 
-This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
+The easiest way to run the dashboard with all necessary permissions is using Docker Compose.
+
+1.  **Build and Start**
+    ```bash
+    docker compose up -d --build
+    ```
+
+2.  **Required Permissions**
+    To ensure the dashboard can read system metrics from the host, the container requires:
+    - Access to the **Docker Socket** (`/var/run/docker.sock`)
+    - Access to host system paths (`/proc`, `/sys`)
+    - `privileged: true` or specific capabilities for hardware temperature/CPU data.
+
+The provided `docker-compose.yml` handles these mounts and environment variables automatically.
 
 ---
 *Maintained by Satyaa & Clawdy 🦞*
