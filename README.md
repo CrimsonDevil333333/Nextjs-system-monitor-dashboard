@@ -1,84 +1,33 @@
 # Next.js System Monitor Dashboard
 
-A modern, real-time system monitoring dashboard built with **Next.js**, **Material UI**, and **Node.js**. Designed for Raspberry Pi and Linux servers to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
+A modern, real-time system monitoring dashboard built with **Next.js**, **Material UI**, and **Node.js**. Optimized for Raspberry Pi 5.
 
 ![Dashboard Preview](public/screenshots/dashboard-dark.jpg)
 
 ## 🚀 Features
 
-- **Real-Time Monitoring**: Live tracking of CPU usage, Memory, Temperature, and Network Traffic.
-- **Docker Integration**: 
-  - View running/stopped containers.
-  - Real-time CPU & Memory usage per container.
-  - **Live Logs** viewer for containers.
-  - Start/Stop status indicators.
-  - Search and Sort capabilities.
-- **Process Manager**: Top 5 CPU consumers on dashboard + dedicated full process list.
-- **Visual History**: Interactive area graphs for CPU and Memory history.
-- **Storage Analysis**: Monitor physical drives and virtual mounts (RAM disks, etc.).
-- **Responsive Design**: Fully optimized for Mobile, Tablet, and Desktop.
-- **Dark/Light Mode**: Toggleable themes saved to local storage.
+- **Optimized Auth UI**: Glassmorphism login card with better error handling.
+- **Standalone Mode**: Build footprint reduced from 2GB to ~96MB.
+- **Logout Support**: Dedicated session termination in the sidebar.
+- **Dynamic Headers**: Real-time page title updates in the navigation bar.
+- **System Monitoring**: Live tracking of CPU, Memory, Temp, and Network.
+- **Docker & Process Manager**: Control containers and processes directly.
 
-## 🛠️ Tech Stack
+## 🛠️ Performance (Pi5 Optimized)
 
-- **Framework**: [Next.js 14+](https://nextjs.org/) (App Router)
-- **UI Library**: [Material UI (MUI)](https://mui.com/)
-- **Charts**: [Recharts](https://recharts.org/)
-- **System Info**: [systeminformation](https://www.npmjs.com/package/systeminformation)
-- **Backend**: Node.js API Routes (Next.js)
+This project uses Next.js Standalone output to minimize RAM and storage usage on professional servers.
 
-## 📦 Installation
+## 📦 Installation & Deployment
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/CrimsonDevil333333/Nextjs-system-monitor-dashboard.git
-    cd Nextjs-system-monitor-dashboard
-    ```
-
-2.  **Install Dependencies**
-    ```bash
-    npm install
-    ```
-
-3.  **Run Development Server**
-    ```bash
-    npm run dev -- -p 9123
-    ```
-    Access at `http://localhost:9123`
-
-4.  **Build for Production**
+1.  **Build**
     ```bash
     npm run build
-    npm start -- -p 9123
     ```
 
-## 🐳 Docker Support
+2.  **Production Run**
+    ```bash
+    PORT=9123 node .next/standalone/server.js
+    ```
 
-To allow the dashboard to read Docker stats and logs, the user running the Node.js process must have permissions to access the Docker socket.
-
-```bash
-sudo usermod -aG docker $USER
-# You may need to restart your session or reboot
-```
-
-## 📱 Screenshots
-
-| Dashboard (Dark) | Dashboard (Light) |
-|---|---|
-| ![Dark Mode](public/screenshots/dashboard-dark.jpg) | ![Light Mode](public/screenshots/dashboard-light.jpg) |
-
-| Docker Containers | Container Logs |
-|---|---|
-| ![Docker List](public/screenshots/docker-list.jpg) | ![Docker Logs](public/screenshots/docker-logs.jpg) |
-
-| Process Manager | Mobile Friendly |
-|---|---|
-| ![Processes](public/screenshots/processes.jpg) | *(Responsive Layout)* |
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+---
+*Created by Satyaa & Clawdy 🦞*

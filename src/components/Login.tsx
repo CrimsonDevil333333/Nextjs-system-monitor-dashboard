@@ -18,6 +18,10 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!username || !password) {
+        setError('Please enter both username and password');
+        return;
+    }
     setError('');
     setLoading(true);
     
@@ -35,44 +39,61 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
         setError(json.error || 'Invalid credentials');
       }
     } catch (e) {
-      setError('Login failed');
+      setError('Login service unavailable');
     } finally {
         setLoading(false);
     }
   };
 
   return (
-    <Card sx={{ maxWidth: 400, width: '100%', boxShadow: 3 }}>
-        <CardContent>
-          <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+    <Card 
+        sx={{ 
+            maxWidth: 420, 
+            width: '90%', 
+            borderRadius: 4,
+            overflow: 'hidden',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            backdropFilter: 'blur(10px)',
+            background: (theme) => theme.palette.mode === 'dark' 
+                ? 'rgba(30, 30, 30, 0.8)' 
+                : 'rgba(255, 255, 255, 0.8)'
+        }}
+    >
+        <CardContent sx={{ p: 4 }}>
+          <Box display="flex" flexDirection="column" alignItems="center" mb={4}>
             <Box 
                 sx={{ 
-                    width: 56, 
-                    height: 56, 
-                    borderRadius: '50%', 
+                    width: 64, 
+                    height: 64, 
+                    borderRadius: '20px', 
                     bgcolor: 'primary.main', 
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     mb: 2,
-                    boxShadow: 2
+                    boxShadow: '0 4px 20px rgba(25, 118, 210, 0.4)',
+                    transform: 'rotate(-5deg)'
                 }}
             >
-                <LockIcon fontSize="large" />
+                <LockIcon sx={{ fontSize: 32 }} />
             </Box>
-            <Typography variant="h5" fontWeight="bold">System Access</Typography>
-            <Typography variant="body2" color="text.secondary">Login with SSH credentials</Typography>
+            <Typography variant="h4" fontWeight="800" letterSpacing="-0.5px">Welcome</Typography>
+            <Typography variant="body2" color="text.secondary">Secure access to Pi5 Monitor</Typography>
           </Box>
           
           <form onSubmit={handleSubmit}>
             <TextField 
               fullWidth 
               label="Username" 
+              placeholder="e.g. pi"
               margin="normal"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="username"
+              variant="outlined"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
             />
             <TextField 
               fullWidth 
@@ -82,24 +103,44 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
+              variant="outlined"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
             />
             
-            <FormControlLabel
-                control={<Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)} />}
-                label="Remember me"
-            />
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
+                <FormControlLabel
+                    control={<Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)} size="small" />}
+                    label={<Typography variant="body2">Remember me</Typography>}
+                />
+            </Box>
             
-            {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+            {error && (
+                <Alert 
+                    severity="error" 
+                    variant="filled"
+                    sx={{ mt: 2, borderRadius: 2, fontSize: '0.875rem' }}
+                >
+                    {error}
+                </Alert>
+            )}
             
             <Button 
               type="submit" 
               fullWidth 
               variant="contained" 
               size="large"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ 
+                  mt: 4, 
+                  py: 1.5,
+                  borderRadius: 3, 
+                  textTransform: 'none', 
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)'
+              }}
               disabled={loading}
             >
-              {loading ? 'Authenticating...' : 'Unlock'}
+              {loading ? 'Authenticating...' : 'Unlock Dashboard'}
             </Button>
           </form>
         </CardContent>

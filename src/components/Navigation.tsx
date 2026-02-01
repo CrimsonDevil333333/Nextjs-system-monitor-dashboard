@@ -16,21 +16,47 @@ import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import NetworkCheckRoundedIcon from '@mui/icons-material/NetworkCheckRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useColorMode } from './ThemeRegistry';
 
 const DRAWER_WIDTH = 260;
+
+const MENU_ITEMS = [
+  { text: 'Overview', icon: <DashboardRoundedIcon />, path: '/' },
+  { text: 'Processes', icon: <AppsRoundedIcon />, path: '/processes' },
+  { text: 'Terminal', icon: <TerminalRoundedIcon />, path: '/terminal' },
+  { text: 'Storage Manager', icon: <StorageRoundedIcon />, path: '/storage' },
+  { text: 'Network Tools', icon: <NetworkCheckRoundedIcon />, path: '/network' },
+  { text: 'Settings', icon: <SettingsRoundedIcon />, path: '/settings' },
+  { text: 'Help & Support', icon: <HelpRoundedIcon />, path: '/help' },
+];
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
   const colorMode = useColorMode();
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (res.ok) {
+        router.push('/login');
+      }
+    } catch (e) {
+      console.error('Logout failed');
+    }
+  };
+
+  const currentItem = MENU_ITEMS.find(item => item.path === pathname);
+  const pageTitle = currentItem ? currentItem.text : 'Dashboard';
 
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -51,49 +77,41 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
         </Typography>
       </Box>
       <List sx={{ flexGrow: 1, px: 1 }}>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/" selected={pathname === '/'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><DashboardRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Overview" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/processes" selected={pathname === '/processes'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><AppsRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Processes" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/terminal" selected={pathname === '/terminal'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><TerminalRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Terminal" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/storage" selected={pathname === '/storage'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><StorageRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Storage Manager" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/network" selected={pathname === '/network'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><NetworkCheckRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Network Tools" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/settings" selected={pathname === '/settings'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><SettingsRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/help" selected={pathname === '/help'} onClick={() => setMobileOpen(false)}>
-            <ListItemIcon><HelpRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Help & Support" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItemButton>
-        </ListItem>
+        {MENU_ITEMS.map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton 
+              component={Link} 
+              href={item.path} 
+              selected={pathname === item.path} 
+              onClick={() => setMobileOpen(false)}
+              sx={{
+                borderRadius: 2,
+                mb: 0.5,
+                '&.Mui-selected': {
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                  '& .MuiListItemIcon-root': { color: 'white' },
+                  '&:hover': { bgcolor: 'primary.dark' }
+                }
+              }}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} primaryTypographyProps={{ fontWeight: 500 }} />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
+      
+      <Box sx={{ px: 1, pb: 2 }}>
+        <ListItemButton 
+          onClick={handleLogout}
+          sx={{ borderRadius: 2, color: 'error.main' }}
+        >
+          <ListItemIcon><LogoutRoundedIcon color="error" /></ListItemIcon>
+          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
+        </ListItemButton>
+      </Box>
+
       <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
         <Typography variant="caption" color="text.secondary" display="block" align="center">
           v1.2.0 • Caretaker
@@ -109,7 +127,11 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
         sx={{ 
           width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
           ml: { sm: `${DRAWER_WIDTH}px` },
-          zIndex: (theme) => theme.zIndex.drawer + 1 
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: 'background.paper',
+          backgroundImage: 'none',
+          boxShadow: 'none',
+          borderBottom: `1px solid ${theme.palette.divider}`
         }}
       >
         <Toolbar>
@@ -118,12 +140,12 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { sm: 'none' }, color: 'text.primary' }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, color: 'text.primary' }}>
-            {pathname === '/' ? 'Dashboard' : 'Processes'}
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, color: 'text.primary', fontWeight: 'bold' }}>
+            {pageTitle}
           </Typography>
           <IconButton onClick={colorMode.toggleColorMode} sx={{ color: 'text.primary' }}>
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
