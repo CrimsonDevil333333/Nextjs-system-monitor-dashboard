@@ -12,14 +12,14 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
   - **Standalone Build Mode**: Uses Next.js standalone output to reduce the production footprint from **2GB to ~96MB**.
   - **RAM Disk Friendly**: Designed to run efficiently in volatile high-speed storage environments.
 - **📊 Real-Time Monitoring**: Live tracking of CPU usage, Memory pressure, Temperature, and Network I/O.
-- **🐳 Container \u0026 Process Management**: 
+- **🐳 Container & Process Management**: 
   - Full Docker integration (Start/Stop/Logs/Stats).
   - Advanced Process Manager with termination capabilities.
 - **🛠️ Integrated Tools**: Built-in Network tools (Ping/DNS), Storage Manager (File browser/editor), and a secure Command Runner.
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 14+](https://nextjs.org/) (App Router \u0026 Turbopack)
+- **Framework**: [Next.js 14+](https://nextjs.org/) (App Router & Turbopack)
 - **UI Library**: [Material UI (MUI)](https://mui.com/)
 - **Charts**: [Recharts](https://recharts.org/)
 - **System Info**: [systeminformation](https://www.npmjs.com/package/systeminformation)
@@ -27,7 +27,7 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
 
 ## 📦 Quick Start (Production Mode)
 
-1.  **Clone \u0026 Install**
+1.  **Clone & Install**
     ```bash
     git clone https://github.com/CrimsonDevil333333/Nextjs-system-monitor-dashboard.git
     cd Nextjs-system-monitor-dashboard
@@ -49,4 +49,4 @@ A modern, high-performance, real-time system monitoring dashboard built with **N
 This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
 
 ---
-*Maintained by Satyaa \u0026 Clawdy 🦞*
+*Maintained by Satyaa & Clawdy 🦞*
