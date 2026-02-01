@@ -64,31 +64,31 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="#" onClick={() => setMobileOpen(false)}>
+          <ListItemButton component={Link} href="/terminal" selected={pathname === '/terminal'} onClick={() => setMobileOpen(false)}>
             <ListItemIcon><TerminalRoundedIcon /></ListItemIcon>
-            <ListItemText primary="Terminal (Soon)" primaryTypographyProps={{ fontWeight: 500 }} />
+            <ListItemText primary="Terminal" primaryTypographyProps={{ fontWeight: 500 }} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="#" onClick={() => setMobileOpen(false)}>
+          <ListItemButton component={Link} href="/storage" selected={pathname === '/storage'} onClick={() => setMobileOpen(false)}>
             <ListItemIcon><StorageRoundedIcon /></ListItemIcon>
             <ListItemText primary="Storage Manager" primaryTypographyProps={{ fontWeight: 500 }} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="#" onClick={() => setMobileOpen(false)}>
+          <ListItemButton component={Link} href="/network" selected={pathname === '/network'} onClick={() => setMobileOpen(false)}>
             <ListItemIcon><NetworkCheckRoundedIcon /></ListItemIcon>
             <ListItemText primary="Network Tools" primaryTypographyProps={{ fontWeight: 500 }} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="#" onClick={() => setMobileOpen(false)}>
+          <ListItemButton component={Link} href="/settings" selected={pathname === '/settings'} onClick={() => setMobileOpen(false)}>
             <ListItemIcon><SettingsRoundedIcon /></ListItemIcon>
             <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="#" onClick={() => setMobileOpen(false)}>
+          <ListItemButton component={Link} href="/help" selected={pathname === '/help'} onClick={() => setMobileOpen(false)}>
             <ListItemIcon><HelpRoundedIcon /></ListItemIcon>
             <ListItemText primary="Help & Support" primaryTypographyProps={{ fontWeight: 500 }} />
           </ListItemButton>

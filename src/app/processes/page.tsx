@@ -3,14 +3,20 @@
 import { useEffect, useState } from 'react';
 import { 
   Box, Typography, Paper, Table, TableBody, TableCell, 
-  TableContainer, TableHead, TableRow, LinearProgress, TextField, InputAdornment
+  TableContainer, TableHead, TableRow, LinearProgress, TextField, InputAdornment, IconButton,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Processes() {
   const [processes, setProcesses] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  
+  // Kill State
+  const [killPid, setKillPid] = useState<number | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const fetchProcesses = async () => {
     try {
@@ -26,15 +32,31 @@ export default function Processes() {
 
   useEffect(() => {
     fetchProcesses();
-    const interval = setInterval(fetchProcesses, 5000); // Poll every 5s
+    const interval = setInterval(fetchProcesses, 5000); 
     return () => clearInterval(interval);
   }, []);
+
+  const handleKillRequest = (pid: number) => {
+      setKillPid(pid);
+      setConfirmOpen(true);
+  };
+
+  const executeKill = async () => {
+      if (!killPid) return;
+      try {
+          await fetch(`/api/processes/${killPid}`, { method: 'DELETE' });
+          fetchProcesses(); // Refresh immediately
+          setConfirmOpen(false);
+      } catch (e) {
+          alert('Failed to kill process');
+      }
+  };
 
   const filteredList = processes?.list 
     ? processes.list
         .filter((p: any) => p.name.toLowerCase().includes(filter.toLowerCase()))
-        .sort((a: any, b: any) => b.cpu - a.cpu) // Sort by CPU desc
-        .slice(0, 50) // Top 50
+        .sort((a: any, b: any) => b.cpu - a.cpu) 
+        .slice(0, 50) 
     : [];
 
   return (
@@ -77,6 +99,7 @@ export default function Processes() {
               <TableCell align="right">CPU %</TableCell>
               <TableCell align="right">Mem %</TableCell>
               <TableCell>State</TableCell>
+              <TableCell align="right">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -90,16 +113,30 @@ export default function Processes() {
                 <TableCell align="right">{p.cpu.toFixed(1)}</TableCell>
                 <TableCell align="right">{p.mem.toFixed(1)}</TableCell>
                 <TableCell>{p.state}</TableCell>
+                <TableCell align="right">
+                    <IconButton size="small" color="error" onClick={() => handleKillRequest(p.pid)}>
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </TableCell>
               </TableRow>
             ))}
-            {filteredList.length === 0 && !loading && (
-                <TableRow>
-                    <TableCell colSpan={6} align="center">No processes found</TableCell>
-                </TableRow>
-            )}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Confirm Dialog */}
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+          <DialogTitle>Kill Process?</DialogTitle>
+          <DialogContent>
+              <DialogContentText>
+                  Are you sure you want to terminate process {killPid}? This action cannot be undone.
+              </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+              <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+              <Button onClick={executeKill} color="error" variant="contained">Kill</Button>
+          </DialogActions>
+      </Dialog>
     </Box>
   );
 }
