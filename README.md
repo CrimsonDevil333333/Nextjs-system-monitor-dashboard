@@ -1,33 +1,52 @@
-# Next.js System Monitor Dashboard
+# Next.js System Monitor Dashboard 🚀
 
-A modern, real-time system monitoring dashboard built with **Next.js**, **Material UI**, and **Node.js**. Optimized for Raspberry Pi 5.
+A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Raspberry Pi 5 and professional Linux server environments.
 
 ![Dashboard Preview](public/screenshots/dashboard-dark.jpg)
 
-## 🚀 Features
+## ✨ New & Updated Features
 
-- **Optimized Auth UI**: Glassmorphism login card with better error handling.
-- **Standalone Mode**: Build footprint reduced from 2GB to ~96MB.
-- **Logout Support**: Dedicated session termination in the sidebar.
-- **Dynamic Headers**: Real-time page title updates in the navigation bar.
-- **System Monitoring**: Live tracking of CPU, Memory, Temp, and Network.
-- **Docker & Process Manager**: Control containers and processes directly.
+- **🎨 Modernized Auth UI**: Sleek glassmorphism login interface with improved validation, backdrop blur effects, and responsive design.
+- **🔐 Secure Session Management**: Integrated **Logout** functionality and persistent "Remember Me" support via JWT.
+- **⚡ Pi5 Performance Optimization**: 
+  - **Standalone Build Mode**: Uses Next.js standalone output to reduce the production footprint from **2GB to ~96MB**.
+  - **RAM Disk Friendly**: Designed to run efficiently in volatile high-speed storage environments.
+- **📊 Real-Time Monitoring**: Live tracking of CPU usage, Memory pressure, Temperature, and Network I/O.
+- **🐳 Container \u0026 Process Management**: 
+  - Full Docker integration (Start/Stop/Logs/Stats).
+  - Advanced Process Manager with termination capabilities.
+- **🛠️ Integrated Tools**: Built-in Network tools (Ping/DNS), Storage Manager (File browser/editor), and a secure Command Runner.
 
-## 🛠️ Performance (Pi5 Optimized)
+## 🛠️ Tech Stack
 
-This project uses Next.js Standalone output to minimize RAM and storage usage on professional servers.
+- **Framework**: [Next.js 14+](https://nextjs.org/) (App Router \u0026 Turbopack)
+- **UI Library**: [Material UI (MUI)](https://mui.com/)
+- **Charts**: [Recharts](https://recharts.org/)
+- **System Info**: [systeminformation](https://www.npmjs.com/package/systeminformation)
+- **Runtime**: Node.js 20+
 
-## 📦 Installation & Deployment
+## 📦 Quick Start (Production Mode)
 
-1.  **Build**
+1.  **Clone \u0026 Install**
+    ```bash
+    git clone https://github.com/CrimsonDevil333333/Nextjs-system-monitor-dashboard.git
+    cd Nextjs-system-monitor-dashboard
+    npm install
+    ```
+
+2.  **Build Optimized Standalone**
     ```bash
     npm run build
     ```
 
-2.  **Production Run**
+3.  **Run Production Server**
     ```bash
     PORT=9123 node .next/standalone/server.js
     ```
 
+## 🤝 Contributing
+
+This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
+
 ---
-*Created by Satyaa & Clawdy 🦞*
+*Maintained by Satyaa \u0026 Clawdy 🦞*
