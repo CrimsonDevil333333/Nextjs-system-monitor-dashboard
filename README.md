@@ -2,7 +2,7 @@
 
 A modern, real-time system monitoring dashboard built with **Next.js**, **Material UI**, and **Node.js**. Designed for Raspberry Pi and Linux servers to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
 
-![Dashboard Preview](https://i.imgur.com/your-preview-image.png)
+![Dashboard Preview](public/screenshots/dashboard-dark.jpg)
 
 ## 🚀 Features
 
@@ -63,9 +63,17 @@ sudo usermod -aG docker $USER
 
 ## 📱 Screenshots
 
-| Dashboard | Docker Logs | Mobile View |
-|-----------|-------------|-------------|
-| *(Add screenshots here)* | *(Add screenshots here)* | *(Add screenshots here)* |
+| Dashboard (Dark) | Dashboard (Light) |
+|---|---|
+| ![Dark Mode](public/screenshots/dashboard-dark.jpg) | ![Light Mode](public/screenshots/dashboard-light.jpg) |
+
+| Docker Containers | Container Logs |
+|---|---|
+| ![Docker List](public/screenshots/docker-list.jpg) | ![Docker Logs](public/screenshots/docker-logs.jpg) |
+
+| Process Manager | Mobile Friendly |
+|---|---|
+| ![Processes](public/screenshots/processes.jpg) | *(Responsive Layout)* |
 
 ## 🤝 Contributing
 
@@ -73,4 +81,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
