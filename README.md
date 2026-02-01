@@ -92,4 +92,6 @@ The easiest way to run the dashboard with all necessary permissions is using Doc
 This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
 
 ---
-*Maintained by Satyaa & Clawdy 🦞*
+*Maintained by Satyaa & Clawdy 🦞
+
+---*
