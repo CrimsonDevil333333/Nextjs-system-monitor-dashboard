@@ -83,6 +83,10 @@ The easiest way to run the dashboard with all necessary permissions is using Doc
 |---|---|
 | ![Container Logs](public/screenshots/docker-logs-new.jpg) | ![Process Manager](public/screenshots/processes-new.jpg) |
 
+| Integrated Command Runner | Mobile Friendly |
+|---|---|
+| ![Terminal](public/screenshots/terminal-new.jpg) | *(Responsive Layout)* |
+
 ## 🤝 Contributing
 
 This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
