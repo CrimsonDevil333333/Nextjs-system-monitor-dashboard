@@ -2,7 +2,7 @@
 
 A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Linux servers and professional Linux server environments to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
 
-![Dashboard Preview](public/screenshots/dashboard-dark.jpg)
+![Dashboard Preview](public/screenshots/dashboard-dark-new.jpg)
 
 ## ✨ New & Updated Features
 
@@ -75,23 +75,39 @@ The easiest way to run the dashboard with all necessary permissions is using Doc
 
 ## 📱 Screenshots
 
+### Dark Mode (Professional)
 | Dashboard Overview | Docker Management |
 |---|---|
-| ![Dashboard Overview](public/screenshots/dashboard-dark-new.jpg) | ![Docker List](public/screenshots/docker-list-new.jpg) |
+| ![Overview](public/screenshots/dashboard-dark-new.jpg) | ![Docker](public/screenshots/docker-list-new.jpg) |
 
-| Live Container Logs | Advanced Process Manager |
+| Live Logs | Process Manager |
 |---|---|
-| ![Container Logs](public/screenshots/docker-logs-new.jpg) | ![Process Manager](public/screenshots/processes-new.jpg) |
+| ![Logs](public/screenshots/docker-logs-new.jpg) | ![Processes](public/screenshots/processes-new.jpg) |
 
-| Integrated Command Runner | Mobile Friendly |
+| Storage Manager | Network Tools |
 |---|---|
-| ![Terminal](public/screenshots/terminal-new.jpg) | *(Responsive Layout)* |
+| ![Storage](public/screenshots/storage-new.jpg) | ![Network](public/screenshots/network-new.jpg) |
+
+| Command Runner | Login Interface |
+|---|---|
+| ![Terminal](public/screenshots/terminal-new.jpg) | ![Login Dark](public/screenshots/login-dark-new.jpg) |
+
+### Light Mode (Clean)
+| Dashboard Overview | Process Manager |
+|---|---|
+| ![Overview Light](public/screenshots/overview-light-new.jpg) | ![Processes Light](public/screenshots/processes-light-new.jpg) |
+
+| Command Runner | Storage Manager |
+|---|---|
+| ![Terminal Light](public/screenshots/terminal-light-new.jpg) | ![Storage Light](public/screenshots/storage-light-new.jpg) |
+
+| Network Tools | Login Interface |
+|---|---|
+| ![Network Light](public/screenshots/network-light-new.jpg) | ![Login Light](public/screenshots/login-light-new.jpg) |
 
 ## 🤝 Contributing
 
 This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
 
 ---
-*Maintained by Satyaa & Clawdy 🦞
-
----*
+*Maintained by Satyaa & Clawdy 🦞*
