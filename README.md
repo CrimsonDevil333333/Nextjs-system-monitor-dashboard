@@ -75,17 +75,13 @@ The easiest way to run the dashboard with all necessary permissions is using Doc
 
 ## 📱 Screenshots
 
-| Dashboard (Dark) | Dashboard (Light) |
+| Dashboard Overview | Docker Management |
 |---|---|
-| ![Dark Mode](public/screenshots/dashboard-dark.jpg) | ![Light Mode](public/screenshots/dashboard-light.jpg) |
+| ![Dashboard Overview](public/screenshots/dashboard-dark-new.jpg) | ![Docker List](public/screenshots/docker-list-new.jpg) |
 
-| Docker Containers | Container Logs |
+| Live Container Logs | Advanced Process Manager |
 |---|---|
-| ![Docker List](public/screenshots/docker-list.jpg) | ![Docker Logs](public/screenshots/docker-logs.jpg) |
-
-| Process Manager | Mobile Friendly |
-|---|---|
-| ![Processes](public/screenshots/processes.jpg) | *(Responsive Layout)* |
+| ![Container Logs](public/screenshots/docker-logs-new.jpg) | ![Process Manager](public/screenshots/processes-new.jpg) |
 
 ## 🤝 Contributing
 
