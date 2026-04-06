@@ -11,9 +11,12 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import SearchIcon from '@mui/icons-material/Search';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import CloseIcon from '@mui/icons-material/Close';
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import StopRoundedIcon from '@mui/icons-material/StopRounded';
+import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import { useState, useMemo, useEffect, useRef } from 'react';
 
-function Row({ container, onShowLogs }: { container: any, onShowLogs: (id: string, name: string) => void }) {
+function Row({ container, onShowLogs, onAction }: { container: any, onShowLogs: (id: string, name: string) => void, onAction?: (id: string, action: string) => void }) {
   const [open, setOpen] = useState(false);
   
   // Deduplicate ports
@@ -48,9 +51,61 @@ function Row({ container, onShowLogs }: { container: any, onShowLogs: (id: strin
             {container.stats?.mem !== undefined ? `${(container.stats.mem / 1024 / 1024).toFixed(0)} MB` : '-'}
         </TableCell>
         <TableCell align="right">
-             <IconButton size="small" onClick={() => onShowLogs(container.id, container.name)} title="View Logs" color="primary">
-                <TerminalIcon fontSize="small" />
-             </IconButton>
+             <Box display="flex" gap={0.5} justifyContent="flex-end">
+                {container.state === 'running' ? (
+                  <>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => onShowLogs(container.id, container.name)} 
+                      title="View Logs" 
+                      color="primary"
+                    >
+                      <TerminalIcon fontSize="small" />
+                    </IconButton>
+                    {onAction && (
+                      <>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => onAction(container.id, 'restart')} 
+                          title="Restart" 
+                          color="warning"
+                        >
+                          <RestartAltRoundedIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => onAction(container.id, 'stop')} 
+                          title="Stop" 
+                          color="error"
+                        >
+                          <StopRoundedIcon fontSize="small" />
+                        </IconButton>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {onAction && (
+                      <IconButton 
+                        size="small" 
+                        onClick={() => onAction(container.id, 'start')} 
+                        title="Start" 
+                        color="success"
+                      >
+                        <PlayArrowRoundedIcon fontSize="small" />
+                      </IconButton>
+                    )}
+                    <IconButton 
+                      size="small" 
+                      onClick={() => onShowLogs(container.id, container.name)} 
+                      title="View Logs" 
+                      color="primary"
+                    >
+                      <TerminalIcon fontSize="small" />
+                    </IconButton>
+                  </>
+                )}
+             </Box>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -100,7 +155,13 @@ function Row({ container, onShowLogs }: { container: any, onShowLogs: (id: strin
 type Order = 'asc' | 'desc';
 type OrderBy = 'name' | 'cpu' | 'mem';
 
-export default function DockerTable({ containers }: { containers: any[] }) {
+export default function DockerTable({ 
+  containers,
+  onAction 
+}: { 
+  containers: any[],
+  onAction?: (containerId: string, action: string) => void 
+}) {
   const [filter, setFilter] = useState('');
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<OrderBy>('cpu');
@@ -179,8 +240,8 @@ export default function DockerTable({ containers }: { containers: any[] }) {
   }
 
   return (
-    <TableContainer component={Paper} sx={{ borderRadius: 3, overflow: 'hidden' }}>
-      <Box p={2} display="flex" alignItems="center" bgcolor="background.default" borderBottom={1} borderColor="divider" flexWrap="wrap" gap={2}>
+    <TableContainer component={Paper} sx={{ borderRadius: 3, overflowX: 'auto', width: '100%', display: 'block' }}>
+      <Box p={2} display="flex" alignItems="center" bgcolor="background.default" borderBottom={1} borderColor="divider" flexWrap="wrap" gap={2} sx={{ minWidth: 'max-content' }}>
          <Box display="flex" alignItems="center" mr="auto">
             <ExtensionRoundedIcon sx={{ mr: 1, color: 'info.main' }} />
             <Typography variant="h6" fontWeight="bold">Docker Containers</Typography>
@@ -197,7 +258,7 @@ export default function DockerTable({ containers }: { containers: any[] }) {
             }}
          />
       </Box>
-      <Table aria-label="collapsible table" size="small">
+      <Table aria-label="collapsible table" size="small" sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow sx={{ bgcolor: 'background.default' }}>
             <TableCell />
@@ -223,7 +284,7 @@ export default function DockerTable({ containers }: { containers: any[] }) {
         </TableHead>
         <TableBody>
           {filtered.map((container) => (
-            <Row key={container.id} container={container} onShowLogs={handleOpenLogs} />
+            <Row key={container.id} container={container} onShowLogs={handleOpenLogs} onAction={onAction} />
           ))}
         </TableBody>
       </Table>

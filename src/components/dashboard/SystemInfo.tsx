@@ -11,6 +11,7 @@ export default function SystemInfo({
 }: { 
   osInfo: any, cpu: any, mem: any, processes?: any[], users?: any[], diskLayout?: any[], connections?: number 
 }) {
+  if (!osInfo || !mem) return null;
   const formatBytes = (bytes: number) => (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
 
   return (

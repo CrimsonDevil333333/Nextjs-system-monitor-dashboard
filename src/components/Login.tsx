@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Box, Card, CardContent, TextField, Button, Typography, Alert, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Card, CardContent, TextField, Button, Typography, Alert, Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
@@ -10,6 +10,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
       const defaultUser = localStorage.getItem('default_user');
@@ -29,17 +30,25 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, remember })
+        body: JSON.stringify({ username, password, remember }),
+        credentials: 'include', // Ensure cookies are included
       });
       
-      if (res.ok) {
-        onLogin();
+      const json = await res.json();
+      
+      if (res.ok && json.success) {
+        setSuccess(true);
+        localStorage.setItem('default_user', username);
+        setError('');
+        // Wait for cookie to be processed by browser, then redirect
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       } else {
-        const json = await res.json();
-        setError(json.error || 'Invalid credentials');
+        setError(json.error || 'Authentication failed');
       }
-    } catch (e) {
-      setError('Login service unavailable');
+    } catch (e: any) {
+      setError('Login service unavailable. Check server status.');
     } finally {
         setLoading(false);
     }
@@ -67,27 +76,32 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
                     width: 64, 
                     height: 64, 
                     borderRadius: '20px', 
-                    bgcolor: 'primary.main', 
+                    bgcolor: success ? 'success.main' : 'primary.main', 
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     mb: 2,
-                    boxShadow: '0 4px 20px rgba(25, 118, 210, 0.4)',
-                    transform: 'rotate(-5deg)'
+                    boxShadow: success ? '0 4px 20px rgba(34, 197, 94, 0.4)' : '0 4px 20px rgba(25, 118, 210, 0.4)',
+                    transform: 'rotate(-5deg)',
+                    transition: 'all 0.3s ease'
                 }}
             >
-                <LockIcon sx={{ fontSize: 32 }} />
+                {success ? (
+                    <CircularProgress size={28} color="inherit" />
+                ) : (
+                    <LockIcon sx={{ fontSize: 32 }} />
+                )}
             </Box>
             <Typography variant="h4" fontWeight="800" letterSpacing="-0.5px">Welcome</Typography>
-            <Typography variant="body2" color="text.secondary">Secure access to Pi5 Monitor</Typography>
+            <Typography variant="body2" color="text.secondary">Secure access to System Monitor</Typography>
           </Box>
           
           <form onSubmit={handleSubmit}>
             <TextField 
               fullWidth 
               label="Username" 
-              placeholder="e.g. pi"
+              placeholder="e.g. admin, root, your username"
               margin="normal"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -124,6 +138,15 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
                 </Alert>
             )}
             
+            {success && (
+                <Alert 
+                    severity="success" 
+                    sx={{ mt: 2, borderRadius: 2, fontSize: '0.95rem', fontWeight: 'bold' }}
+                >
+                    ✓ Login successful — redirecting...
+                </Alert>
+            )}
+            
             <Button 
               type="submit" 
               fullWidth 
@@ -140,7 +163,12 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
               }}
               disabled={loading}
             >
-              {loading ? 'Authenticating...' : 'Unlock Dashboard'}
+              {loading ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} color="inherit" />
+                      <span>Authenticating...</span>
+                  </Box>
+              ) : 'Unlock Dashboard'}
             </Button>
           </form>
         </CardContent>

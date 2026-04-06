@@ -1,22 +1,28 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   AppBar, Toolbar, Typography, IconButton, Box, Drawer, 
   List, ListItem, ListItemButton, ListItemIcon, ListItemText, 
-  useTheme, Avatar 
+  useTheme, Avatar, CircularProgress 
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
+import MemoryIcon from '@mui/icons-material/Memory';
 import TerminalRoundedIcon from '@mui/icons-material/TerminalRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import NetworkCheckRoundedIcon from '@mui/icons-material/NetworkCheckRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import HandymanIcon from '@mui/icons-material/Handyman';
+import ArticleIcon from '@mui/icons-material/Article';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useColorMode } from './ThemeRegistry';
@@ -26,11 +32,16 @@ const DRAWER_WIDTH = 260;
 const MENU_ITEMS = [
   { text: 'Overview', icon: <DashboardRoundedIcon />, path: '/' },
   { text: 'Processes', icon: <AppsRoundedIcon />, path: '/processes' },
+  { text: 'Docker', icon: <MemoryIcon />, path: '/docker' },
   { text: 'Terminal', icon: <TerminalRoundedIcon />, path: '/terminal' },
-  { text: 'Storage Manager', icon: <StorageRoundedIcon />, path: '/storage' },
-  { text: 'Network Tools', icon: <NetworkCheckRoundedIcon />, path: '/network' },
+  { text: 'Cron', icon: <ScheduleIcon />, path: '/cron' },
+  { text: 'Packages', icon: <InventoryIcon />, path: '/packages' },
+  { text: 'Services', icon: <HandymanIcon />, path: '/services' },
+  { text: 'Storage', icon: <StorageRoundedIcon />, path: '/storage' },
+  { text: 'Network', icon: <NetworkCheckRoundedIcon />, path: '/network' },
+  { text: 'Logs', icon: <ArticleIcon />, path: '/logs' },
   { text: 'Settings', icon: <SettingsRoundedIcon />, path: '/settings' },
-  { text: 'Help & Support', icon: <HelpRoundedIcon />, path: '/help' },
+  { text: 'Help', icon: <HelpRoundedIcon />, path: '/help' },
 ];
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
@@ -39,6 +50,28 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/check', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.username || null);
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      }
+      setChecking(false);
+    };
+    checkAuth();
+    const interval = setInterval(checkAuth, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -48,6 +81,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
     try {
       const res = await fetch('/api/auth/logout', { method: 'POST' });
       if (res.ok) {
+        setUser(null);
         router.push('/login');
       }
     } catch (e) {
@@ -60,21 +94,32 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Toolbar /> {/* Spacer to clear fixed AppBar */}
+      <Toolbar /> {/* TODO: need to add only on mobiles not on desktop.... */}
       <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Avatar 
-          variant="rounded" 
-          sx={{ 
-            bgcolor: 'primary.main', 
-            width: 40, height: 40,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}
-        >
-          Pi
-        </Avatar>
-        <Typography variant="h6" fontWeight="bold">
-          SysAdmin
-        </Typography>
+        {checking ? (
+          <CircularProgress size={40} />
+        ) : (
+          <>
+            <Avatar 
+              variant="rounded" 
+              sx={{ 
+                bgcolor: user ? 'success.main' : 'primary.main', 
+                width: 40, height: 40,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              }}
+            >
+              {user ? user.charAt(0).toUpperCase() : 'G'}
+            </Avatar>
+            <Box>
+              <Typography variant="h6" fontWeight="bold">
+                {user || 'Guest'}
+              </Typography>
+              <Typography variant="caption" color={user ? 'success.main' : 'text.secondary'}>
+                {user ? 'Logged In' : 'Not Logged In'}
+              </Typography>
+            </Box>
+          </>
+        )}
       </Box>
       <List sx={{ flexGrow: 1, px: 1 }}>
         {MENU_ITEMS.map((item) => (
@@ -103,18 +148,29 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
       </List>
       
       <Box sx={{ px: 1, pb: 2 }}>
-        <ListItemButton 
-          onClick={handleLogout}
-          sx={{ borderRadius: 2, color: 'error.main' }}
-        >
-          <ListItemIcon><LogoutRoundedIcon color="error" /></ListItemIcon>
-          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItemButton>
+        {user ? (
+          <ListItemButton 
+            onClick={handleLogout}
+            sx={{ borderRadius: 2, color: 'error.main' }}
+          >
+            <ListItemIcon><LogoutRoundedIcon color="error" /></ListItemIcon>
+            <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
+          </ListItemButton>
+        ) : (
+          <ListItemButton 
+            component={Link}
+            href="/login"
+            sx={{ borderRadius: 2, color: 'primary.main' }}
+          >
+            <ListItemIcon><LoginRoundedIcon color="primary" /></ListItemIcon>
+            <ListItemText primary="Login" primaryTypographyProps={{ fontWeight: 500 }} />
+          </ListItemButton>
+        )}
       </Box>
 
       <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
         <Typography variant="caption" color="text.secondary" display="block" align="center">
-          v1.2.0 • Caretaker
+          System Monitor
         </Typography>
       </Box>
     </Box>

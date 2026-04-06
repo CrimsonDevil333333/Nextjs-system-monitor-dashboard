@@ -1,113 +1,125 @@
-# Next.js System Monitor Dashboard 🚀
+# Linux System Monitor Dashboard
 
-A modern, high-performance, real-time system monitoring dashboard built with **Next.js 14+**, **Material UI**, and **Node.js**. Specifically optimized for Linux servers and professional Linux server environments to provide a beautiful, responsive interface for tracking system resources, Docker containers, and processes.
+A modern, real-time system monitoring dashboard built with **Next.js**, **Material UI**, and **Node.js**. Works on any Linux distribution.
 
-![Dashboard Preview](public/screenshots/dashboard-dark-new.jpg)
+![Dashboard](public/screenshots/dashboard-dark-new.jpg)
 
-## ✨ New & Updated Features
+## Features
 
-- **🎨 Modernized Auth UI**: Sleek glassmorphism login interface with improved validation, backdrop blur effects, and responsive design.
-- **🔐 Secure Session Management**: Integrated **Logout** functionality and persistent "Remember Me" support via JWT.
-- **⚡ Linux Performance Optimization**: 
-  - **Standalone Build Mode**: Uses Next.js standalone output to reduce the production footprint from **2GB to ~96MB**.
-  - **RAM Disk Friendly**: Designed to run efficiently in volatile high-speed storage environments.
-- **📊 Real-Time Monitoring**: Live tracking of CPU usage, Memory pressure, Temperature, and Network I/O.
-- **🐳 Container & Process Management**: 
-  - Full Docker integration (Start/Stop/Logs/Stats).
-  - Advanced Process Manager with termination capabilities.
-- **🛠️ Integrated Tools**: Built-in Network tools (Ping/DNS), Storage Manager (File browser/editor), and a secure Command Runner.
+- **Real-Time Monitoring**: Live CPU, Memory, Temperature, Network I/O via WebSocket
+- **Docker Management**: View containers, stats, logs; start/stop containers
+- **Process Manager**: Full process list with search, sort, kill capability
+- **Storage Manager**: Browse filesystems, view usage, edit text files
+- **Network Tools**: Ping and DNS lookup
+- **Cron Manager**: View, add, edit, delete cron jobs
+- **Terminal**: Secure command runner with rate limiting
+- **Packages**: System package management
+- **Services**: Systemd services management
+- **Logs**: System logs viewer
+- **Historical Data**: SQLite-backed metrics (1h, 6h, 24h, 7d)
+- **Authentication**: System credentials (same as SSH login)
+- **Dark/Light Mode**: Toggleable themes
 
-## 🚀 Core Features
+## Quick Start
 
-- **Authentication**: Secure login using SSH credentials, with a fallback for environment variables.
-- **Docker Integration**: 
-  - View running/stopped containers.
-  - Real-time CPU & Memory usage per container.
-  - **Live Logs** viewer for containers.
-  - Start/Stop status indicators.
-- **Process Manager**: Top 5 CPU consumers on dashboard + dedicated full process list.
-- **Visual History**: Interactive area graphs for CPU and Memory history.
-- **Storage Manager**: Browse the file system, view mounted filesystems with usage, and edit text files directly in the browser.
-- **Responsive Design**: Fully optimized for Mobile, Tablet, and Desktop.
-- **Dark/Light Mode**: Toggleable themes saved to local storage.
+### Prerequisites
+- Node.js 20+
+- npm
+- Linux system with user accounts
 
-## 🛠️ Tech Stack
+### Installation
 
-- **Framework**: [Next.js 14+](https://nextjs.org/) (App Router & Turbopack)
-- **UI Library**: [Material UI (MUI)](https://mui.com/)
-- **Charts**: [Recharts](https://recharts.org/)
-- **System Info**: [systeminformation](https://www.npmjs.com/package/systeminformation)
-- **Backend**: Node.js API Routes (Next.js)
+```bash
+git clone https://github.com/your-repo/linux-system-monitor.git
+cd linux-system-monitor
+npm install
+```
 
-## 🐳 Docker Deployment (Recommended)
+### Run
 
-The easiest way to run the dashboard with all necessary permissions is using Docker Compose.
+```bash
+# Development
+npm run dev
 
-1.  **Build and Start**
-    ```bash
-    docker compose up -d --build
-    ```
+# Access at http://localhost:3000
+# Login with your Linux username and password (same as SSH)
+```
 
-2.  **Required Permissions**
-    To ensure the dashboard can read system metrics from the host, the container requires:
-    - Access to the **Docker Socket** (`/var/run/docker.sock`)
-    - Access to host system paths (`/proc`, `/sys`)
-    - `privileged: true` or specific capabilities for hardware temperature/CPU data.
+### Production
 
-## 📦 Manual Installation (Production Mode)
+```bash
+npm run build
+PORT=3000 JWT_SECRET=$(openssl rand -hex 32) node .next/standalone/server.js
+```
 
-1.  **Clone & Install**
-    ```bash
-    git clone https://github.com/CrimsonDevil333333/Nextjs-system-monitor-dashboard.git
-    cd Nextjs-system-monitor-dashboard
-    npm install
-    ```
+## Docker
 
-2.  **Build Optimized Standalone**
-    ```bash
-    npm run build
-    ```
+```bash
+docker compose up -d --build
+```
 
-3.  **Run Production Server**
-    ```bash
-    PORT=9123 node .next/standalone/server.js
-    ```
+## Authentication
 
-## 📱 Screenshots
+The dashboard uses your Linux system credentials - the same username/password you use for SSH.
 
-### Dark Mode (Professional)
-| Dashboard Overview | Docker Management |
-|---|---|
-| ![Overview](public/screenshots/dashboard-dark-new.jpg) | ![Docker](public/screenshots/docker-list-new.jpg) |
+### How it works:
+1. Enter your Linux username (e.g., `pi`, `admin`)
+2. Enter your Linux password
+3. The dashboard uses `su` command to verify your credentials
 
-| Live Logs | Process Manager |
-|---|---|
-| ![Logs](public/screenshots/docker-logs-new.jpg) | ![Processes](public/screenshots/processes-new.jpg) |
+### Permissions
 
-| Storage Manager | Network Tools |
-|---|---|
-| ![Storage](public/screenshots/storage-new.jpg) | ![Network](public/screenshots/network-new.jpg) |
+The verification script needs root access to verify passwords:
 
-| Command Runner | Login Interface |
-|---|---|
-| ![Terminal](public/screenshots/terminal-new.jpg) | ![Login Dark](public/screenshots/login-dark-new.jpg) |
+```bash
+# Make sure verify_su.sh is executable
+chmod +x verify_su.sh
+```
 
-### Light Mode (Clean)
-| Dashboard Overview | Process Manager |
-|---|---|
-| ![Overview Light](public/screenshots/overview-light-new.jpg) | ![Processes Light](public/screenshots/processes-light-new.jpg) |
+For Docker, ensure the container runs with appropriate privileges or mount `/etc/shadow` readable.
 
-| Command Runner | Storage Manager |
-|---|---|
-| ![Terminal Light](public/screenshots/terminal-light-new.jpg) | ![Storage Light](public/screenshots/storage-light-new.jpg) |
+## Environment Variables
 
-| Network Tools | Login Interface |
-|---|---|
-| ![Network Light](public/screenshots/network-light-new.jpg) | ![Login Light](public/screenshots/login-light-new.jpg) |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `3000` |
+| `JWT_SECRET` | JWT secret (REQUIRED in production) | Auto-generated |
+| `DEV_AUTH` | Dev auth `user:pass` | Disabled |
+| `VERIFY_SCRIPT` | Password verification script | `./verify_su.sh` |
+| `DB_PATH` | SQLite database path | `./data/metrics.db` |
 
-## 🤝 Contributing
+## Menu Items
 
-This project is actively maintained. Contributions, issue reports, and feature requests are welcome!
+- **Overview** - Dashboard with system stats
+- **Processes** - Running processes
+- **Docker** - Container management
+- **Terminal** - Command runner
+- **Cron** - Cron job manager
+- **Packages** - Package management
+- **Services** - Systemd services
+- **Storage** - Filesystem browser
+- **Network** - Network tools
+- **Logs** - System logs
+- **Settings** - Dashboard settings
+- **Help** - Documentation
 
----
-*Maintained by Satyaa & Clawdy 🦞*
+## Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **UI**: Material UI
+- **Charts**: Recharts
+- **System Info**: systeminformation
+- **Database**: SQLite
+- **WebSocket**: ws
+- **Auth**: jose
+
+## Supported Systems
+
+- Raspberry Pi OS
+- Ubuntu/Debian
+- CentOS/RHEL
+- Any Linux with glibc
+
+## License
+
+MIT
