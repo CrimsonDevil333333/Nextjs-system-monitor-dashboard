@@ -29,7 +29,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ output: result });
-  } catch (e: any) {
-    return NextResponse.json({ output: e.message || 'Execution failed' });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Execution failed';
+    return NextResponse.json({ output: message });
   }
 }

@@ -5,6 +5,13 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+interface Package {
+  name: string;
+  version: string;
+  arch?: string;
+  status?: string;
+}
+
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
@@ -27,7 +34,7 @@ export async function GET(request: Request) {
 
     const { stdout } = await execAsync(command);
     
-    let packages: any[] = [];
+    let packages: Package[] = [];
     if (type === 'upgradable') {
         packages = stdout.split('\n')
             .filter(line => line.includes('/') && !line.startsWith('Listing'))
@@ -50,8 +57,9 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({ packages });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch packages';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -75,7 +83,8 @@ export async function POST(request: Request) {
     const { stdout, stderr } = await execAsync(command, { timeout: 300000 });
     
     return NextResponse.json({ output: stdout || stderr });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to process package';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

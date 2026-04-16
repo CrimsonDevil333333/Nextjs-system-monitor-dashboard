@@ -27,7 +27,8 @@ export async function GET(request: Request) {
     const { stdout, stderr } = await execAsync(command);
     
     return NextResponse.json({ logs: stdout || stderr });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Failed to fetch logs' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch logs';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

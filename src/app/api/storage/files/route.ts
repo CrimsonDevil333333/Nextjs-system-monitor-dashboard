@@ -3,15 +3,20 @@ import { isAuthenticated, unauthorized } from '@/lib/auth';
 import fs from 'fs/promises';
 import path from 'path';
 
+interface FileEntry {
+  name: string;
+  isDirectory: boolean;
+  size: number;
+  mtime: Date;
+  path: string;
+}
+
 export async function POST(request: Request) {
   if (!await isAuthenticated()) return unauthorized();
 
   const { path: dirPath = '/' } = await request.json();
 
   try {
-    // Basic path sanitization to prevent traversal above root (though root access is the point here)
-    // const cleanPath = path.resolve(dirPath); 
-
     const stats = await fs.stat(dirPath);
     if (!stats.isDirectory()) {
         return NextResponse.json({ error: 'Not a directory' }, { status: 400 });
@@ -30,21 +35,23 @@ export async function POST(request: Request) {
                 mtime: entryStats.mtime,
                 path: entryPath
             };
-        } catch (e) {
-            return null; // Skip unreadable files
+        } catch {
+            return null;
         }
     }));
 
+    const filteredFiles = files.filter((f): f is FileEntry => f !== null);
+
     return NextResponse.json({ 
         path: dirPath,
-        files: files.filter(Boolean).sort((a: any, b: any) => {
-            // Sort directories first, then files
+        files: filteredFiles.sort((a, b) => {
             if (a.isDirectory === b.isDirectory) return a.name.localeCompare(b.name);
             return a.isDirectory ? -1 : 1;
         })
     });
 
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to list files';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

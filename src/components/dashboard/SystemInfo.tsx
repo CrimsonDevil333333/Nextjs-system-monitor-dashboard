@@ -1,16 +1,47 @@
 import { 
-  Box, Card, CardContent, Grid, Typography, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip 
+  Box, Card, CardContent, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip 
 } from '@mui/material';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
+
+interface OsInfo {
+  hostname: string;
+  distro: string;
+  release: string;
+  kernel: string;
+  arch: string;
+}
+
+interface MemInfo {
+  total: number;
+  active?: number;
+}
+
+interface ProcessInfo {
+  name: string;
+  cpu: number;
+  mem: number;
+}
+
+interface UserInfo {
+  user: string;
+  tty: string;
+}
+
+interface SystemInfoProps {
+  osInfo: OsInfo | null;
+  cpu?: unknown;
+  mem: MemInfo | null;
+  processes?: ProcessInfo[];
+  users?: UserInfo[];
+  diskLayout?: unknown[];
+  connections?: number;
+}
 
 export default function SystemInfo({ 
-  osInfo, cpu, mem, processes, users, diskLayout, connections 
-}: { 
-  osInfo: any, cpu: any, mem: any, processes?: any[], users?: any[], diskLayout?: any[], connections?: number 
-}) {
+  osInfo, mem, processes, users, connections 
+}: SystemInfoProps) {
   if (!osInfo || !mem) return null;
   const formatBytes = (bytes: number) => (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
 

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isAuthenticated, unauthorized } from '@/lib/auth';
 import fs from 'fs/promises';
-import path from 'path';
 import mime from 'mime-types';
 
 export async function GET(request: Request) {
@@ -25,8 +24,9 @@ export async function GET(request: Request) {
             'Content-Length': stats.size.toString()
         }
     });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Failed to read file';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -43,7 +43,8 @@ export async function POST(request: Request) {
   try {
       await fs.writeFile(filePath, content, 'utf-8');
       return NextResponse.json({ success: true });
-  } catch (e: any) {
-      return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Failed to write file';
+      return NextResponse.json({ error: message }, { status: 500 });
   }
 }

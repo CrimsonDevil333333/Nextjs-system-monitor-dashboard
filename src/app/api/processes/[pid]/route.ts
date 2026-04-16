@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { isAuthenticated, unauthorized } from '@/lib/auth';
-import { exec } from 'child_process';
 
 export async function DELETE(
   request: Request,
@@ -17,7 +16,8 @@ export async function DELETE(
   try {
     process.kill(parseInt(pid), 'SIGKILL');
     return NextResponse.json({ success: true, message: `Process ${pid} killed` });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Failed to kill process';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

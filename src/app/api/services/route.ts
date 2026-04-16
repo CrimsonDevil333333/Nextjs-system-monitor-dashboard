@@ -30,8 +30,9 @@ export async function GET() {
       });
 
     return NextResponse.json({ services });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch services';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -49,7 +50,8 @@ export async function POST(request: Request) {
     const { stdout, stderr } = await execAsync(`sudo systemctl ${action} ${serviceId}`);
     
     return NextResponse.json({ output: stdout || stderr || 'Success' });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to process service';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

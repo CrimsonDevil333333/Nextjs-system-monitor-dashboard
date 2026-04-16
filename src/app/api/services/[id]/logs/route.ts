@@ -20,7 +20,8 @@ export async function GET(
     const { stdout, stderr } = await execAsync(`journalctl -u ${id} -n 100 --no-pager`);
     
     return NextResponse.json({ logs: stdout || stderr || 'No logs found.' });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Failed to fetch logs' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch logs';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

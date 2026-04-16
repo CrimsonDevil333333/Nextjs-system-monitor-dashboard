@@ -102,8 +102,9 @@ export async function POST(request: Request) {
       failedAttempts.delete(clientIP);
       return response;
     }
-  } catch (e: any) {
-    console.error('Auth error:', e.message);
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Unknown error';
+    console.error('Auth error:', message);
   }
 
   // Failed

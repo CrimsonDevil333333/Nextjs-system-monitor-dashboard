@@ -16,13 +16,44 @@ import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import { useState, useMemo, useEffect, useRef } from 'react';
 
-function Row({ container, onShowLogs, onAction }: { container: any, onShowLogs: (id: string, name: string) => void, onAction?: (id: string, action: string) => void }) {
+interface ContainerPort {
+  PublicPort?: number;
+  PrivatePort?: number;
+  Type?: string;
+}
+
+interface ContainerStats {
+  cpu: number;
+  mem: number;
+  memLimit: number;
+  netIO: { rx: number; tx: number };
+  blockIO: { r: number; w: number };
+}
+
+interface DockerContainer {
+  id: string;
+  name: string;
+  image: string;
+  state: string;
+  status: string;
+  command?: string;
+  ports?: ContainerPort[];
+  stats?: ContainerStats;
+}
+
+interface RowProps {
+  container: DockerContainer;
+  onShowLogs: (id: string, name: string) => void;
+  onAction?: (id: string, action: string) => void;
+}
+
+function Row({ container, onShowLogs, onAction }: RowProps) {
   const [open, setOpen] = useState(false);
   
   // Deduplicate ports
-  const uniquePorts = Array.from(new Set(container.ports.map((p: any) => 
+  const uniquePorts = container.ports ? Array.from(new Set(container.ports.map((p: ContainerPort) => 
     p.PublicPort ? `${p.PublicPort} -> ${p.PrivatePort}` : `${p.PrivatePort}`
-  )));
+  ))) : [];
 
   return (
     <>

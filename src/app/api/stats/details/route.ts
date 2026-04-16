@@ -24,11 +24,22 @@ export async function GET() {
     ]);
 
     // Merge docker stats safely (handle potential ID mismatches and camelCase keys)
+    interface DockerContainerStats {
+  id?: string;
+  cpuPercent?: number;
+  cpu_percent?: number;
+  memUsage?: number;
+  mem_usage?: number;
+  memLimit?: number;
+  mem_limit?: number;
+  netIO?: { rx?: number; tx?: number; wx?: number };
+  blockIO?: { r?: number; w?: number };
+}
+
     const containersWithStats = (dockerContainers || []).map(container => {
-      // Try exact match first, then prefix match
       const rawStats = (dockerStats || []).find(s => 
-        s && (s.id === container.id || container.id.startsWith(s.id) || s.id.startsWith(container.id))
-      ) as any;
+        s && (s.id === container.id || container.id.startsWith(s.id || '') || (s.id || '').startsWith(container.id))
+      ) as DockerContainerStats | undefined;
 
       // Normalize stats
       const stats = rawStats ? {

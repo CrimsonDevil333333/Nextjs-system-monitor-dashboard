@@ -35,7 +35,9 @@ export async function POST(request: Request) {
     }
     const { stdout, stderr } = await execAsync(command, { timeout: 30000, maxBuffer: 1024 * 1024 * 5, cwd: dir });
     return NextResponse.json({ output: stdout, error: stderr });
-  } catch (e: any) {
-    return NextResponse.json({ output: e.stdout || '', error: e.message || e.stderr || 'Execution failed' }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Execution failed';
+    const err = e as { stdout?: string; stderr?: string };
+    return NextResponse.json({ output: err.stdout || '', error: message }, { status: 500 });
   }
 }

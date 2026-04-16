@@ -18,12 +18,24 @@ export async function GET() {
       si.dockerContainerStats('*').catch(() => []),
     ]);
 
-    const containersWithStats = (dockerContainers || []).map(container => {
-      const rawStats = (dockerStats || []).find(s =>
-        s && (s.id === container.id || container.id.startsWith(s.id) || s.id.startsWith(container.id))
-      ) as any;
+    interface DockerContainerStats {
+  id?: string;
+  cpuPercent?: number;
+  cpu_percent?: number;
+  memUsage?: number;
+  mem_usage?: number;
+  memLimit?: number;
+  mem_limit?: number;
+  netIO?: { rx?: number; tx?: number; wx?: number };
+  blockIO?: { r?: number; w?: number };
+}
 
-      const stats = rawStats ? {
+const containersWithStats = (dockerContainers || []).map(container => {
+  const rawStats = (dockerStats || []).find(s =>
+    s && (s.id === container.id || container.id.startsWith(s.id || '') || (s.id || '').startsWith(container.id))
+  ) as DockerContainerStats | undefined;
+
+  const stats = rawStats ? {
         cpu: rawStats.cpuPercent || rawStats.cpu_percent || 0,
         mem: rawStats.memUsage || rawStats.mem_usage || 0,
         memLimit: rawStats.memLimit || rawStats.mem_limit || 0,
@@ -50,9 +62,10 @@ export async function GET() {
     });
 
     return NextResponse.json({ containers: containersWithStats });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch Docker containers';
     return NextResponse.json(
-      { error: 'Failed to fetch Docker containers: ' + error.message },
+      { error: 'Failed to fetch Docker containers: ' + message },
       { status: 500 }
     );
   }
@@ -105,9 +118,10 @@ export async function POST(request: Request) {
       containerId,
       output: stdout,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to process Docker container action';
     return NextResponse.json(
-      { error: `Failed to process Docker container action: ` + error.message },
+      { error: 'Failed to process Docker container action: ' + message },
       { status: 500 }
     );
   }

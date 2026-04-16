@@ -14,7 +14,7 @@ export async function GET() {
       interfaces,
       connections: connections.filter(c => c.state === 'ESTABLISHED' || c.state === 'LISTEN')
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch network info' }, { status: 500 });
   }
 }

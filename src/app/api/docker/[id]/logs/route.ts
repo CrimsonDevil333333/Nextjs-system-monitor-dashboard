@@ -19,7 +19,8 @@ export async function GET(
 
     const { stdout, stderr } = await execAsync(`docker logs --tail 200 ${resolvedParams.id}`);
     return NextResponse.json({ logs: stdout + (stderr ? '\n' + stderr : '') });
-  } catch (error: any) {
-    return NextResponse.json({ error: 'Failed to fetch logs: ' + error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch logs';
+    return NextResponse.json({ error: 'Failed to fetch logs: ' + message }, { status: 500 });
   }
 }

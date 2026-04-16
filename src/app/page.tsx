@@ -21,10 +21,35 @@ import DockerTable from '@/components/dashboard/DockerTable';
 
 type HistoryPoint = { time: string; cpu: number; mem: number };
 
+interface FastData {
+  load?: { currentLoad: number };
+  mem?: { active: number; total: number };
+  network?: Array<{ iface: string; rx_sec?: number; tx_sec?: number; operstate: string; internal?: boolean }>;
+  uptime?: number;
+  temp?: number;
+}
+
+interface DetailData {
+  osInfo?: { hostname: string; distro: string; release: string; kernel: string; arch: string };
+  cpu?: unknown;
+  fs?: Array<{ mount: string; use: number; used: number; size: number }>;
+  docker?: unknown[];
+  services?: Array<{ name: string; running: boolean }>;
+  topProcesses?: Array<{ name: string; cpu: number; mem: number }>;
+  connections?: number;
+  temp?: { main: number };
+  uptime?: number;
+}
+
+interface MemData {
+  active: number;
+  total: number;
+}
+
 export default function Dashboard() {
   const theme = useTheme();
-  const [fastData, setFastData] = useState<any>(null);
-  const [detailData, setDetailData] = useState<any>(null);
+  const [fastData, setFastData] = useState<FastData | null>(null);
+  const [detailData, setDetailData] = useState<DetailData | null>(null);
   const [cpuHistory, setCpuHistory] = useState<HistoryPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -135,7 +160,7 @@ export default function Dashboard() {
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis dataKey="time" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
                         <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} unit="%" />
-                        <Tooltip formatter={(value: any) => `${Number(value).toFixed(2)}%`} />
+                        <Tooltip formatter={(value) => `${Number(value).toFixed(2)}%`} />
                         <Area type="monotone" dataKey="cpu" name="CPU" stroke="#ef4444" fill="#ef4444" fillOpacity={0.15} strokeWidth={2} isAnimationActive={false} />
                         <Area type="monotone" dataKey="mem" name="RAM" stroke="#22c55e" fill="#22c55e" fillOpacity={0.1} strokeWidth={2} isAnimationActive={false} />
                       </AreaChart>
@@ -148,9 +173,9 @@ export default function Dashboard() {
           <Grid size={{ xs: 12, lg: 4 }}>
             {detailData ? (
               <SystemInfo 
-                osInfo={detailData.osInfo} 
+                osInfo={detailData.osInfo || null} 
                 cpu={detailData.cpu} 
-                mem={fastData?.mem || {}} 
+                mem={fastData?.mem ? { active: fastData.mem.active, total: fastData.mem.total } : null} 
                 processes={detailData.topProcesses || []} 
                 connections={detailData.connections} 
               />

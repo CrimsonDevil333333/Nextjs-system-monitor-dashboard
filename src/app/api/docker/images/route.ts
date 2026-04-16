@@ -26,9 +26,10 @@ export async function GET() {
     });
 
     return NextResponse.json({ images });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch Docker images';
     return NextResponse.json(
-      { error: 'Failed to fetch Docker images: ' + error.message },
+      { error: 'Failed to fetch Docker images: ' + message },
       { status: 500 }
     );
   }
@@ -82,9 +83,10 @@ export async function POST(request: Request) {
       output: stdout,
       error: stderr,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to process Docker image';
     return NextResponse.json(
-      { error: `Failed to process Docker image: ` + error.message },
+      { error: 'Failed to process Docker image: ' + message },
       { status: 500 }
     );
   }
